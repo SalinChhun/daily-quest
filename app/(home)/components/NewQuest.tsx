@@ -75,17 +75,17 @@ export default function NewQuest({ quest }: { quest: IQuest }) {
 				formData.append("path", imagePath);
 				
 				try {
-					const response = await fetch("/api/upload", {
-						method: "POST",
-						body: formData,
-					});
-					
-					if (!response.ok) {
-						throw new Error("Failed to upload file");
-					}
-					
-					const data = await response.json();
-					await createQuestProgressAfterUpload(quest.id, objectId, data.path);
+					// const response = await fetch("/api/upload", {
+					// 	method: "POST",
+					// 	body: formData,
+					// });
+					//
+					// if (!response.ok) {
+					// 	throw new Error("Failed to upload file");
+					// }
+					//
+					// const data = await response.json();
+					await createQuestProgressAfterUpload(quest.id, objectId, "");
 					await handlePushNotification();
 					reset();
 					queryClient.invalidateQueries({ queryKey: ["quests"] });
