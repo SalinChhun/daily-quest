@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id                String    @id
+  email             String
+  display_name      String?
+  image_url         String?
+  provider          String
+  quest_counts      Int       @default(0)
+  enable_custom_quest Boolean  @default(false)
+  created_at        DateTime  @default(now())
+
+  // Relations
+  challengerAsUser  Challenger? @relation("UserChallenger")
+  challengerAsReviewer Challenger[] @relation("ReviewerChallenger")
+  notifications     Notification[]
+  questLogs         QuestLog[]
+  questProgress     QuestProgress[]
+  quests            Quest[]
+  strike            Strike?
+  
+  @@map("profiles")
+}
+
+model Challenger {
+  user_id      String
+  reviewer_id  String
+  is_accepted  Boolean?
+  created_at   DateTime  @default(now())
+
+  // Relations
+  user         Profile   @relation("UserChallenger", fields: [user_id], references: [id], onDelete: Cascade)
+  reviewer     Profile   @relation("ReviewerChallenger", fields: [reviewer_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id])
+  @@map("challenger")
+}
+
+model Notification {
+  id              String   @id @default(uuid())
+  user_id         String
+  notification_json String
+  created_at      DateTime @default(now())
+
+  // Relations
+  user            Profile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id])
+  @@map("notification")
+}
+
+model QuestLog {
+  id            String   @id @default(uuid())
+  user_id       String
+  log_date      DateTime
+  is_completed  Boolean  @default(false)
+  count         Int      @default(0)
+  quest_counts  Int      @default(0)
+
+  // Relations
+  user          Profile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, log_date])
+  @@map("quest_log")
+}
+
+model Quest {
+  id          String   @id @default(uuid())
+  title       String
+  emoji       String
+  public      Boolean  @default(true)
+  created_by  String?
+  created_at  DateTime @default(now())
+
+  // Relations
+  creator     Profile? @relation(fields: [created_by], references: [id], onDelete: SetNull)
+  questProgress QuestProgress[]
+
+  @@map("quests")
+}
+
+model QuestProgress {
+  id            String   @id @default(uuid())
+  quest_id      String
+  user_id       String
+  object_id     String   // Storage object reference
+  image_url     String
+  is_completed  Boolean  @default(false)
+  created_at    DateTime @default(now())
+
+  // Relations
+  quest         Quest    @relation(fields: [quest_id], references: [id], onDelete: Cascade)
+  user          Profile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("quest_progress")
+}
+
+model Strike {
+  count   Int    @default(0)
+  user_id String @id
+
+  // Relations
+  user    Profile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("strike")
+}
