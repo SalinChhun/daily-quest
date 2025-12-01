@@ -46,14 +46,6 @@ export async function getQuests(userId: string) {
 		where: {
 			created_by: userId,
 			public: false,
-			questProgress: {
-				some: {
-					user_id: userId,
-					created_at: {
-						gte: currentDate,
-					},
-				},
-			},
 		},
 		include: {
 			questProgress: {

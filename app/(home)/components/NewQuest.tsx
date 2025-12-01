@@ -41,7 +41,7 @@ export default function NewQuest({ quest }: { quest: IQuest }) {
 	const [isPending, startTransition] = useTransition();
 	const queryClient = useQueryClient();
 
-	const questProgress = quest.quest_progress[0];
+	const questProgress = quest?.quest_progress?.[0];
 	const questImageUrl = quest?.quest_progress
 		? getImageUrl(
 				`${questProgress?.user_id}/${questProgress?.quest_id}/${questProgress?.image_url}`
