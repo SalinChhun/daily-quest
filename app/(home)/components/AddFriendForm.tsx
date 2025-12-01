@@ -19,7 +19,7 @@ import useFriendRequest from "@/app/hook/useFriendRequest";
 import usePendingRequest from "@/app/hook/useReviewer";
 
 const FormSchema = z.object({
-	reviewer_id: z.string().uuid(),
+	reviewer_id: z.string(),
 });
 
 export default function InputForm() {
