@@ -42,16 +42,16 @@ export default function NewQuest({ quest }: { quest: IQuest }) {
 	const queryClient = useQueryClient();
 
 	const questProgress = quest?.quest_progress?.[0];
-	const questImageUrl = quest?.quest_progress
-		? getImageUrl(
-				`${questProgress?.user_id}/${questProgress?.quest_id}/${questProgress?.image_url}`
-		  )
-		: undefined;
-
-	const reset = () => {
-		setReviewFile(undefined);
-		setImagePreview("");
-	};
+	// const questImageUrl = quest?.quest_progress
+	// 	? getImageUrl(
+	// 			`${questProgress?.user_id}/${questProgress?.quest_id}/${questProgress?.image_url}`
+	// 	  )
+	// 	: undefined;
+	//
+	// const reset = () => {
+	// 	setReviewFile(undefined);
+	// 	setImagePreview("");
+	// };
 	const handlePushNotification = async () => {
 		if (user) {
 			await sendNotification(
@@ -65,14 +65,14 @@ export default function NewQuest({ quest }: { quest: IQuest }) {
 
 	const handleReview = async () => {
 		startTransition(async () => {
-			if (reviewFile) {
-				const objectId = crypto.randomUUID() + reviewFile.name;
-				const imagePath = `${user?.id}/${quest?.id}/${objectId}`;
+			// if (reviewFile) {
+			// 	const objectId = crypto.randomUUID() + reviewFile.name;
+			// 	const imagePath = `${user?.id}/${quest?.id}/${objectId}`;
 				
 				// Upload file to API route
-				const formData = new FormData();
-				formData.append("file", reviewFile);
-				formData.append("path", imagePath);
+				// const formData = new FormData();
+				// formData.append("file", reviewFile);
+				// formData.append("path", imagePath);
 				
 				try {
 					// const response = await fetch("/api/upload", {
@@ -85,30 +85,30 @@ export default function NewQuest({ quest }: { quest: IQuest }) {
 					// }
 					//
 					// const data = await response.json();
-					await createQuestProgressAfterUpload(quest.id, objectId, "");
+					await createQuestProgressAfterUpload(quest.id, "", "");
 					await handlePushNotification();
-					reset();
+					// reset();
 					queryClient.invalidateQueries({ queryKey: ["quests"] });
 				} catch (error) {
 					toast.error("Failed to upload and save quest progress. " + (error instanceof Error ? error.message : "Unknown error"));
 				}
-			}
+			// }
 		});
 	};
 
-	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.target?.files;
-		if (files?.length) {
-			const compressedFile = await imageCompression(files[0], {
-				maxSizeMB: 0.5,
-				maxWidthOrHeight: 1080,
-				useWebWorker: true,
-			});
-			const imageUrl = URL.createObjectURL(compressedFile);
-			setReviewFile(compressedFile);
-			setImagePreview(imageUrl);
-		}
-	};
+	// const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+	// 	const files = e.target?.files;
+	// 	if (files?.length) {
+	// 		const compressedFile = await imageCompression(files[0], {
+	// 			maxSizeMB: 0.5,
+	// 			maxWidthOrHeight: 1080,
+	// 			useWebWorker: true,
+	// 		});
+	// 		const imageUrl = URL.createObjectURL(compressedFile);
+	// 		setReviewFile(compressedFile);
+	// 		setImagePreview(imageUrl);
+	// 	}
+	// };
 
 	return (
 		<>
@@ -175,17 +175,17 @@ export default function NewQuest({ quest }: { quest: IQuest }) {
 								id={"quest-file-" + quest.id}
 								accept="image/*"
 								className=" hidden"
-								onChange={handleFileChange}
+								// onChange={handleFileChange}
 							/>
 						</div>
 					) : (
 						<div className="h-96 w-80 mx-auto rounded-2xl  relative">
-							<Image
-								src={imagePrevew || questImageUrl || ""}
-								alt="preview"
-								fill
-								className=" object-cover object-center rounded-2xl"
-							/>
+							{/*<Image*/}
+							{/*	src={imagePrevew || questImageUrl || ""}*/}
+							{/*	alt="preview"*/}
+							{/*	fill*/}
+							{/*	className=" object-cover object-center rounded-2xl"*/}
+							{/*/>*/}
 						</div>
 					)}
 					{reviewFile && (
