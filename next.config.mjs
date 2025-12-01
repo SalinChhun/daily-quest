@@ -20,6 +20,11 @@ const isDev = process.env.NODE_ENV !== "production";
 const withPWA = nextPwa({
 	dest: "public",
 	register: true,
+	buildExcludes: [
+		/app-build-manifest\.json$/,
+		/middleware-manifest\.json$/,
+		/build-manifest\.json$/
+	],
 });
 
 const config = withPWA({
