@@ -14,7 +14,7 @@ export default function UserQuests() {
 	return (
 		<div className="px-3 space-y-5 divide-y">
 			<div className="space-y-4">
-				{data?.map((quest) => {
+				{data?.map((quest: any) => {
 					return <NewQuest quest={{ ...quest }} key={quest.id} />;
 				})}
 			</div>
